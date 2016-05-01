@@ -93,7 +93,7 @@ if __name__ == '__main__':
 
     nudgeX = 0
     nudgeY = 10
-    doRotate = True
+    doRotate = False
 
     activeView = OpenMayaUI.M3dView.active3dView()
 
