@@ -13,7 +13,7 @@ def worldToScreen(fnCamera=None,
     :param activeView(OpenMayaUI.M3dView): Active view to get coordinates.
 
     Returns
-        (list) X Position and Y Position.
+        (list of floats) x and y position of 3d point.
 
     Raises:
         None
@@ -55,7 +55,7 @@ def screenToWorld(point2D=None,
     :param setDistance(float): Distance to set returned point from camera.
 
     Returns:
-        MVector Worldspace point.
+        (OpenMaya.MPoint) 2d Point converted to 3d point.
 
     Raises:
         None
