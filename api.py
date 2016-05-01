@@ -91,6 +91,9 @@ def screenToWorld(point2D=None,
 
 if __name__ == '__main__':
 
+    nudgeX = 0
+    nudgeY = 10
+
     activeView = OpenMayaUI.M3dView.active3dView()
 
     dagCam = OpenMaya.MDagPath()
@@ -111,9 +114,6 @@ if __name__ == '__main__':
     x, y = worldToScreen(fnCamera=fnCamera,
                          objectPoint=objPoint,
                          activeView=activeView)
-
-    nudgeX = 0
-    nudgeY = 10
 
     xyz = screenToWorld(point2D=[x + nudgeX, y + nudgeY],
                         activeView=activeView,
