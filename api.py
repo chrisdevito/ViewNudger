@@ -93,6 +93,7 @@ if __name__ == '__main__':
 
     nudgeX = 0
     nudgeY = 10
+    doRotate = True
 
     activeView = OpenMayaUI.M3dView.active3dView()
 
@@ -128,10 +129,11 @@ if __name__ == '__main__':
               fnCamera.fullPathName(),
               relative=True)
 
-    nDirVec = (xyz - camPnt)
-    angle = -math.degrees(sDirVec.angle(nDirVec))
+    if doRotate:
+        nDirVec = (xyz - camPnt)
+        angle = -math.degrees(sDirVec.angle(nDirVec))
 
-    cmds.rotate(angle, 0, 0,
-                fnCamera.fullPathName(),
-                objectSpace=True,
-                relative=True)
+        cmds.rotate(angle, 0, 0,
+                    fnCamera.fullPathName(),
+                    objectSpace=True,
+                    relative=True)
