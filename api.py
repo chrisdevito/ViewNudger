@@ -5,9 +5,13 @@ from maya import OpenMayaUI
 
 
 def worldToScreen(fnCamera=None,
-                  objPoint=None,
+                  objectPoint=None,
                   activeView=None):
     '''
+    :param fnCamera(OpenMaya.MFnCamera): Active Camera function set.
+    :param objectPoint(OpenMaya.MPoint): Position to test.
+    :param activeView(OpenMayaUI.M3dView): Active view to get coordinates.
+
     Returns
         (list) X Position and Y Position.
 
@@ -25,7 +29,7 @@ def worldToScreen(fnCamera=None,
     width = activeView.portWidth()
     height = activeView.portHeight()
 
-    pos = OpenMaya.MVector(objPoint) - camPnt
+    pos = OpenMaya.MVector(objectPoint) - camPnt
     z = pos * camDir
 
     if z < 0.01:
@@ -44,6 +48,12 @@ def screenToWorld(point2D=None,
                   activeView=None,
                   setDistance=None):
     '''
+
+    :param point2D(list of floats): x and y values to convert to 3d value.
+    :param fnCamera(OpenMaya.MFnCamera): Active Camera function set.
+    :param activeView(OpenMayaUI.M3dView): Active view to get coordinates.
+    :param setDistance(float): Distance to set returned point from camera.
+
     Returns:
         MVector Worldspace point.
 
@@ -99,7 +109,7 @@ if __name__ == '__main__':
     pntDist = sDirVec.length()
 
     x, y = worldToScreen(fnCamera=fnCamera,
-                         objPoint=objPoint,
+                         objectPoint=objPoint,
                          activeView=activeView)
 
     nudgeX = 0
