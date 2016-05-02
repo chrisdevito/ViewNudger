@@ -1,0 +1,65 @@
+QWidget{
+    background-color: rgb(55, 55, 55);
+}
+
+QTreeWidget{
+    color: rgb(235, 235, 235);
+    background-color: rgb(50, 50, 50);
+}
+
+QPushButton{
+    background: rgb(125, 125, 125);
+    border: 0;
+    border-bottom: 3px solid rgb(35, 35, 35);
+    padding: 0 10 0 10;
+    height: 30;
+    font: 10pt "Arial";
+    color: rgb(35, 35, 35);
+}
+
+QTextEdit{
+    color: rgb(235, 235, 235);
+    background-color: rgb(50, 50, 50);
+}
+
+QPushButton:hover{
+    background: rgb(160, 200, 130);
+}
+
+QPushButton:pressed{
+    border: 0;
+    margin-top: 3;
+}
+
+QLabel{
+    font: 10pt "Arial";
+    color: rgb(235, 235, 235);
+}
+
+QCheckBox{
+    color: rgb(235, 235, 235);
+    font: 8pt "Arial";
+}
+
+QDoubleSpinBox{
+    height: 34;
+    font: 10pt "Arial";
+    padding: 5;
+    text-align: "center";
+    color: rgb(235, 235, 235)
+}
+
+QSpinBox:focus{
+    height: 34;
+    font: 10pt "Arial";
+    border: 1 solid rgb(0, 170, 200);
+    border-color: rgb(0, 170, 200);
+    padding: 5;
+    text-align: "center";
+}
+
+QLineEdit{
+    font: 10pt "Arial";
+    color: rgb(235, 255, 255);
+    background: rgb(40, 40, 40);
+}

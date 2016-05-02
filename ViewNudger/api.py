@@ -18,7 +18,7 @@ class Nudge(object):
                           view=OpenMayaUI.M3dView.active3dView())
         nudgeView.moveUp(pixelAmount=1.0)
 
-    Instance this class with a transform and view.
+    Instance this class with a transform and view if required.
     """
     def __init__(self, transformName=None, view=None):
 
@@ -282,5 +282,5 @@ class Nudge(object):
 
 if __name__ == '__main__':
     nudgeView = Nudge(transformName="pSphere1")
-    nudgeView.moveHorizontal(pixelAmount=-10)
+    nudgeView.moveHorizontal(pixelAmount=10)
     nudgeView.moveVertical(pixelAmount=10)
