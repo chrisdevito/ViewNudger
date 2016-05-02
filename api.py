@@ -1,139 +1,286 @@
+# -*- coding: utf-8 -*-
+
 import math
-from maya import cmds
-from maya import OpenMaya
-from maya import OpenMayaUI
+
+try:
+    from maya import cmds
+    from maya import OpenMaya
+    from maya import OpenMayaUI
+except:
+    pass
 
 
-def worldToScreen(fnCamera=None,
-                  objectPoint=None,
-                  activeView=None):
-    '''
-    :param fnCamera(OpenMaya.MFnCamera): Active Camera function set.
-    :param objectPoint(OpenMaya.MPoint): Position to test.
-    :param activeView(OpenMayaUI.M3dView): Active view to get coordinates.
+class Nudge(object):
+    """
+    :class:`Nudge` moves a camera or object based a pixel amount.
 
-    Returns
-        (list of floats) x and y position of 3d point.
+        nudgeView = Nudge(transformName="pSphere1",
+                          view=OpenMayaUI.M3dView.active3dView())
+        nudgeView.moveUp(pixelAmount=1.0)
 
-    Raises:
-        None
-    '''
-    camPnt = OpenMaya.MVector(fnCamera.eyePoint(OpenMaya.MSpace.kWorld))
-    camDir = fnCamera.viewDirection(OpenMaya.MSpace.kWorld)
+    Instance this class with a transform and view.
+    """
+    def __init__(self, transformName=None, view=None):
 
-    projectionMatrix = OpenMaya.MMatrix()
-    activeView.projectionMatrix(projectionMatrix)
-    viewMatrix = OpenMaya.MMatrix()
-    activeView.modelViewMatrix(viewMatrix)
+        if not transformName:
+            raise RuntimeError("No transformName supplied.")
 
-    width = activeView.portWidth()
-    height = activeView.portHeight()
+        if not cmds.objExists(transformName) or \
+                not cmds.nodeType(transformName) == "transform":
 
-    pos = OpenMaya.MVector(objectPoint) - camPnt
-    z = pos * camDir
+            raise RuntimeError("%s either does not exist or"
+                               " isn't a transform." % transformName)
 
-    if z < 0.01:
-        return None, None
+        self.transformName = transformName
 
-    point3D = objPoint * (viewMatrix * projectionMatrix)
+        if not view:
+            self.view = OpenMayaUI.M3dView.active3dView()
 
-    winX = (((point3D.x / point3D.w) + 1.0) / 2.0) * width
-    winY = (((point3D.y / point3D.w) + 1.0) / 2.0) * height
+        else:
+            if type(view) is OpenMayaUI.M3dView:
+                self.view = view
 
-    return winX, winY
+            elif type(view) is str:
+                self.view = OpenMayaUI.M3dView()
 
+                try:
+                    OpenMayaUI.M3dView.getM3dViewFromModelPanel(
+                        view, self.view)
 
-def screenToWorld(point2D=None,
-                  fnCamera=None,
-                  activeView=None,
-                  setDistance=None):
-    '''
+                except:
+                    raise RuntimeError(
+                        "%s is not a model panel or view." % view)
 
-    :param point2D(list of floats): x and y values to convert to 3d value.
-    :param fnCamera(OpenMaya.MFnCamera): Active Camera function set.
-    :param activeView(OpenMayaUI.M3dView): Active view to get coordinates.
-    :param setDistance(float): Distance to set returned point from camera.
+            else:
+                raise RuntimeError("%s is not a view." % view)
 
-    Returns:
-        (OpenMaya.MPoint) 2d Point converted to 3d point.
+        self.fnCamera = self.getCamera()
 
-    Raises:
-        None
-    '''
-    projectionMatrix = OpenMaya.MMatrix()
-    activeView.projectionMatrix(projectionMatrix)
-    viewMatrix = OpenMaya.MMatrix()
-    activeView.modelViewMatrix(viewMatrix)
+    def getCamera(self):
+        """
+        Gets the camera from the current view.
 
-    width = activeView.portWidth()
-    height = activeView.portHeight()
+        Raises:
+            None
 
-    point3D = OpenMaya.MPoint()
-    point3D.x = (2.0 * (point2D[0] / width)) - 1.0
-    point3D.y = (2.0 * (point2D[1] / height)) - 1.0
+        Returns:
+            (OpenMaya.MFnCamera) Camera function set.
+        """
+        dagCam = OpenMaya.MDagPath()
+        self.view.getCamera(dagCam)
 
-    viewProjectionMatrix = (viewMatrix * projectionMatrix)
+        fnCamera = OpenMaya.MFnCamera(dagCam)
 
-    point3D.z = viewProjectionMatrix(3, 2)
-    point3D.w = viewProjectionMatrix(3, 3)
-    point3D.x = point3D.x * point3D.w
-    point3D.y = point3D.y * point3D.w
+        return fnCamera
 
-    point3D *= viewProjectionMatrix.inverse()
+    def moveVertical(self, pixelAmount=1.0, moveObject=False, rotate=False):
+        """
+        Moves object/camera vertical by pixel amount.
 
-    camPnt = OpenMaya.MVector(fnCamera.eyePoint(OpenMaya.MSpace.kWorld))
-    dirVec = (OpenMaya.MVector(point3D) - camPnt)
-    dirVec.normalize()
+        Raises:
+            None
 
-    point3D = (dirVec * setDistance) + camPnt
+        Returns:
+            None
+        """
+        cameraPoint = self.fnCamera.eyePoint(OpenMaya.MSpace.kWorld)
+        transformPoint = OpenMaya.MPoint(*cmds.xform(
+            self.transformName,
+            query=True,
+            worldSpace=True,
+            translation=True))
 
-    return OpenMaya.MPoint(point3D)
+        startDirVec = (transformPoint - cameraPoint)
+        pointDist = startDirVec.length()
+
+        x, y = self.worldToScreen(cameraPoint=cameraPoint,
+                                  transformPoint=transformPoint)
+
+        xyz = self.screenToWorld(point2D=[x, y + pixelAmount],
+                                 cameraPoint=cameraPoint,
+                                 setDistance=pointDist)
+
+        offset = (xyz - transformPoint) + OpenMaya.MVector(transformPoint)
+
+        cmds.undoInfo(openChunk=True)
+
+        if moveObject:
+            cmds.move(offset.x,
+                      offset.y,
+                      offset.z,
+                      self.transformName,
+                      relative=True)
+
+        else:
+            cmds.move(offset.x,
+                      offset.y,
+                      offset.z,
+                      self.fnCamera.fullPathName(),
+                      relative=True)
+
+            if rotate:
+                nDirVec = (xyz - cameraPoint)
+                angle = -math.degrees(startDirVec.angle(nDirVec))
+
+                cmds.rotate(angle, 0, 0,
+                            self.fnCamera.fullPathName(),
+                            objectSpace=True,
+                            relative=True)
+
+        cmds.undoInfo(closeChunk=True)
+
+    def moveHorizontal(self, pixelAmount=1.0, moveObject=False, rotate=False):
+        """
+        Moves object/camera horizontal by pixel amount.
+
+        Raises:
+            None
+
+        Returns:
+            None
+        """
+        cameraPoint = self.fnCamera.eyePoint(OpenMaya.MSpace.kWorld)
+        transformPoint = OpenMaya.MPoint(*cmds.xform(
+            self.transformName,
+            query=True,
+            worldSpace=True,
+            translation=True))
+
+        startDirVec = (transformPoint - cameraPoint)
+        pointDist = startDirVec.length()
+
+        x, y = self.worldToScreen(cameraPoint=cameraPoint,
+                                  transformPoint=transformPoint)
+
+        xyz = self.screenToWorld(point2D=[x + pixelAmount, y],
+                                 cameraPoint=cameraPoint,
+                                 setDistance=pointDist)
+
+        offset = (xyz - transformPoint) + OpenMaya.MVector(transformPoint)
+
+        cmds.undoInfo(openChunk=True)
+
+        if moveObject:
+            cmds.move(offset.x,
+                      offset.y,
+                      offset.z,
+                      self.transformName,
+                      relative=True)
+
+        else:
+            cmds.move(offset.x,
+                      offset.y,
+                      offset.z,
+                      self.fnCamera.fullPathName(),
+                      relative=True)
+
+            if rotate:
+                nDirVec = (xyz - cameraPoint)
+                angle = -math.degrees(startDirVec.angle(nDirVec))
+
+                cmds.rotate(0, angle, 0,
+                            self.fnCamera.fullPathName(),
+                            objectSpace=True,
+                            relative=True)
+
+        cmds.undoInfo(closeChunk=True)
+
+    def worldToScreen(self,
+                      cameraPoint=None,
+                      transformPoint=None):
+        '''
+        Converts a world point into a screen point.
+
+        :param cameraPoint(OpenMaya.MPoint): Position to test.
+        :param transformPoint(OpenMaya.MPoint): Position to test.
+
+        Returns
+            (list of floats) x and y position of 3d point.
+
+        Raises:
+            None
+        '''
+        # Get camera direction.
+        cameraDir = self.fnCamera.viewDirection(OpenMaya.MSpace.kWorld)
+
+        # Grab project and view matrices.
+        projectionMatrix = OpenMaya.MMatrix()
+        self.view.projectionMatrix(projectionMatrix)
+
+        viewMatrix = OpenMaya.MMatrix()
+        self.view.modelViewMatrix(viewMatrix)
+
+        # Grab viewport width/height.
+        width = self.view.portWidth()
+        height = self.view.portHeight()
+
+        # Check to see that point is in view by checking dot product.
+        # Positive means it's facing the camera.
+        pointDir = transformPoint - cameraPoint
+        z = pointDir * cameraDir
+
+        if z < 0.01:
+            return None, None
+
+        # Calculate 2d Screen space.
+        point3D = transformPoint * (viewMatrix * projectionMatrix)
+
+        x = (((point3D.x / point3D.w) + 1.0) / 2.0) * width
+        y = (((point3D.y / point3D.w) + 1.0) / 2.0) * height
+
+        return x, y
+
+    def screenToWorld(self,
+                      point2D=None,
+                      cameraPoint=None,
+                      setDistance=1.0):
+        '''
+        Converts a screen point to world.
+
+        :param point2D(list of floats): x and y values to convert to 3d value.
+        :param cameraPoint(OpenMaya.MPoint): Position to test.
+        :param setDistance(float): Distance to set returned point from camera.
+
+        Returns:
+            (OpenMaya.MPoint) 2d Point converted to 3d point.
+
+        Raises:
+            None
+        '''
+        # Grab project and view matrices.
+        projectionMatrix = OpenMaya.MMatrix()
+        self.view.projectionMatrix(projectionMatrix)
+
+        viewMatrix = OpenMaya.MMatrix()
+        self.view.modelViewMatrix(viewMatrix)
+
+        # Grab viewport width/height.
+        width = self.view.portWidth()
+        height = self.view.portHeight()
+
+        # Get 2d point in 3d.
+        point3D = OpenMaya.MPoint()
+        point3D.x = (2.0 * (point2D[0] / width)) - 1.0
+        point3D.y = (2.0 * (point2D[1] / height)) - 1.0
+
+        viewProjectionMatrix = (viewMatrix * projectionMatrix)
+
+        point3D.z = viewProjectionMatrix(3, 2)
+        point3D.w = viewProjectionMatrix(3, 3)
+        point3D.x = point3D.x * point3D.w
+        point3D.y = point3D.y * point3D.w
+
+        point3D *= viewProjectionMatrix.inverse()
+
+        # Project point into setDistance depth.
+        directionVec = (point3D - cameraPoint)
+        directionVec.normalize()
+
+        point3D = (directionVec * setDistance) + OpenMaya.MVector(cameraPoint)
+
+        return OpenMaya.MPoint(point3D)
 
 if __name__ == '__main__':
-
-    nudgeX = 0
-    nudgeY = 10
-    doRotate = False
-
-    activeView = OpenMayaUI.M3dView.active3dView()
-
-    dagCam = OpenMaya.MDagPath()
-    activeView.getCamera(dagCam)
-
-    fnCamera = OpenMaya.MFnCamera(dagCam)
-    camPnt = fnCamera.eyePoint(OpenMaya.MSpace.kWorld)
-
-    objPoint = OpenMaya.MPoint(*cmds.xform(
-        "pSphere1",
-        query=True,
-        worldSpace=True,
-        translation=True))
-
-    sDirVec = (objPoint - camPnt)
-    pntDist = sDirVec.length()
-
-    x, y = worldToScreen(fnCamera=fnCamera,
-                         objectPoint=objPoint,
-                         activeView=activeView)
-
-    xyz = screenToWorld(point2D=[x + nudgeX, y + nudgeY],
-                        activeView=activeView,
-                        fnCamera=fnCamera,
-                        setDistance=pntDist)
-
-    offset = (xyz - objPoint) + OpenMaya.MVector(objPoint)
-
-    cmds.move(offset.x,
-              offset.y,
-              offset.z,
-              fnCamera.fullPathName(),
-              relative=True)
-
-    if doRotate:
-        nDirVec = (xyz - camPnt)
-        angle = -math.degrees(sDirVec.angle(nDirVec))
-
-        cmds.rotate(angle, 0, 0,
-                    fnCamera.fullPathName(),
-                    objectSpace=True,
-                    relative=True)
+    nudgeView = Nudge(transformName="pSphere1")
+    nudgeView.moveHorizontal(pixelAmount=-10)
+    nudgeView.moveVertical(pixelAmount=10)
