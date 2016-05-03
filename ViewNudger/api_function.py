@@ -10,6 +10,62 @@ except:
     pass
 
 
+def nudge(transformName,
+          nudgeX=0,
+          nudgeY=0,
+          moveObject=False,
+          rotateView=False,
+          view=None):
+    """
+    Nudges a camera view/object by a pixel amount.
+
+    :param transformName (str): Name of a transform to nudge from.
+    :param nudgeX (float): Pixel amount to nudge in x.
+    :param nudgeY (float): Pixel amount to nudge in y.
+    :param moveObject (bool): Move the object instead of view.
+    :param rotateView (bool): Rotate the camera back to aim
+                              at point after nudge.
+    :param view (OpenMaya.M3dView): Optional desired M3dView.
+                                    Active view is default.
+
+    Raises:
+        ``RuntimeError`` If transformName isn't a transform or doesn't exist.
+        ``RuntimeError`` If view set is not a view.
+
+    Returns:
+        None
+    """
+    if not transformName:
+        raise RuntimeError("No transformName supplied.")
+
+    if not cmds.objExists(transformName) or \
+            not cmds.nodeType(transformName) == "transform":
+
+        raise RuntimeError("%s either does not exist or"
+                           " isn't a transform." % transformName)
+
+    transformName = transformName
+
+    if not view:
+        view = OpenMayaUI.M3dView.active3dView()
+
+    else:
+        if not type(view) is OpenMayaUI.M3dView and type(view) is str:
+            viewStr = view
+            view = OpenMayaUI.M3dView()
+
+            try:
+                OpenMayaUI.M3dView.getM3dViewFromModelPanel(
+                    viewStr, view)
+
+            except:
+                raise RuntimeError(
+                    "%s is not a model panel or view." % view)
+
+        else:
+            raise RuntimeError("%s is not a view." % view)
+ 
+
 class Nudge(object):
     """
     :class:`Nudge` moves a camera or object based a pixel amount.
