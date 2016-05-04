@@ -1,8 +1,8 @@
 ===============================
-OBB
+ViewNudger
 ===============================
 
-Oriented Bounding Boxes in Maya.
+ViewNudger in Maya.
 
 Features
 --------

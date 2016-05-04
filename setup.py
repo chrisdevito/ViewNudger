@@ -11,9 +11,6 @@ except ImportError:
 with open('README.rst') as readme_file:
     readme = readme_file.read()
 
-with open('HISTORY.rst') as history_file:
-    history = history_file.read()
-
 requirements = [
     # TODO: put package requirements here
 ]
@@ -26,7 +23,7 @@ setup(
     name='ViewNudger',
     version='0.1.0',
     description="Nudges a view or object in Autodesk Maya.",
-    long_description=readme + '\n\n' + history,
+    long_description=readme,
     author="Christopher DeVito",
     author_email='chrisdevito@chribis.com',
     url='https://github.com/chrisdevito/ViewNudger',
