@@ -44,8 +44,6 @@ def nudge(transformName,
         raise RuntimeError("%s either does not exist or"
                            " isn't a transform." % transformName)
 
-    transformName = transformName
-
     if not view:
         view = OpenMayaUI.M3dView.active3dView()
 
@@ -64,7 +62,27 @@ def nudge(transformName,
 
         else:
             raise RuntimeError("%s is not a view." % view)
- 
+
+
+def getCamera(view):
+    """
+    Gets the camera from the current view.
+
+    :param view (OpenMaya.M3dView): View to get camera from.
+
+    Raises:
+        None
+
+    Returns:
+        (OpenMaya.MFnCamera) Camera function set.
+    """
+    dagCam = OpenMaya.MDagPath()
+    view.getCamera(dagCam)
+
+    fnCamera = OpenMaya.MFnCamera(dagCam)
+
+    return fnCamera
+
 
 class Nudge(object):
     """
