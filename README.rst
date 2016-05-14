@@ -2,10 +2,8 @@
 ViewNudger
 ===========
 
-ViewNudger in Maya.
+A Maya Camera or Object pixel nudger.
 
-Features
---------
-* Stuff
-
-* TODO
+Documentation
+--------------
+You can find more documentation `here <https://viewnudger.readthedocs.org>`_

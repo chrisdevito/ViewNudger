@@ -7,7 +7,7 @@ import sphinx_rtd_theme
 
 # Get the project root dir, which is the parent dir of this
 cwd = os.getcwd()
-project_root = os.path.dirname(os.path.dirname(cwd))
+project_root = os.path.dirname(cwd)
 
 # Insert the project root dir as the first element in the PYTHONPATH.
 # This lets us ensure that the source package is imported, and that its
@@ -34,7 +34,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'ViewNudger'
+project = u'OBB'
 copyright = u'2016, Christopher DeVito'
 
 # The version info for the project you're documenting, acts as replacement
@@ -71,10 +71,10 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # here, relative to this directory. They are copied after the builtin
 # static files, so a file named "default.css" will overwrite the builtin
 # "default.css".
-html_static_path = ['_static']
+html_static_path = []
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'ViewNudgerdoc'
+htmlhelp_basename = 'OBBdoc'
 
 
 # -- Options for LaTeX output ------------------------------------------
@@ -86,8 +86,8 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass
 # [howto/manual]).
 latex_documents = [
-    ('index', 'ViewNudger.tex',
-     u'ViewNudger Documentation',
+    ('index', 'OBB.tex',
+     u'OBB Documentation',
      u'Christopher DeVito', 'manual'),
 ]
 
@@ -96,8 +96,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'ViewNudger',
-     u'ViewNudger Documentation',
+    ('index', 'OBB',
+     u'OBB Documentation',
      [u'Christopher DeVito'], 1)
 ]
 
@@ -107,10 +107,10 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ('index', 'ViewNudger',
-     u'ViewNudger Documentation',
+    ('index', 'OBB',
+     u'OBB Documentation',
      u'Christopher DeVito',
-     'ViewNudger',
+     'OBB',
      'One line description of project.',
      'Miscellaneous'),
 ]
