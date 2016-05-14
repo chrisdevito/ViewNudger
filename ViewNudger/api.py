@@ -3,6 +3,7 @@
 from __future__ import division
 
 import math
+import logging
 
 try:
     from maya import cmds
@@ -10,6 +11,9 @@ try:
     from maya import OpenMayaUI
 except:
     pass
+
+
+log = logging.getLogger('ViewNudger')
 
 
 def parseArgs(transformName,
