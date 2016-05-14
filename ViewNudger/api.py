@@ -37,19 +37,25 @@ def parseArgs(transformName,
         None
     """
     if not transformName:
-        raise RuntimeError("No transformName supplied.")
+        log.error("No transformName supplied.")
+        raise
 
     if not cmds.objExists(transformName) or \
             not cmds.nodeType(transformName) == "transform":
 
-        raise RuntimeError("%s either does not exist or"
-                           " isn't a transform." % transformName)
+        log.error("%s either does not exist or"
+                  " isn't a transform.")
+        raise
 
     if not view:
+        log.debug("Getting active view...")
         view = OpenMayaUI.M3dView.active3dView()
 
     else:
         if not type(view) is OpenMayaUI.M3dView and type(view) is str:
+
+            log.debug("Converting %s to OpenMayaUI.M3dView..." % view)
+
             viewStr = view
             view = OpenMayaUI.M3dView()
 
@@ -58,11 +64,12 @@ def parseArgs(transformName,
                     viewStr, view)
 
             except:
-                raise RuntimeError(
-                    "%s is not a model panel or view." % view)
+                log.error("%s is not a model panel or view." % view)
+                raise
 
         else:
-            raise RuntimeError("%s is not a view." % view)
+            log.error("%s is not a view." % view)
+            raise
 
     return view
 
@@ -108,6 +115,8 @@ def nudge(transformName=None,
                          transformPoint=transformPoint,
                          view=view)
 
+    log.debug("Object is %s, %s in screen space..." % (x, y))
+
     xyz_x = screenToWorld(point2D=[x + pixelAmount[0], y],
                           cameraPoint=cameraPoint,
                           setDistance=pointDist,
@@ -121,9 +130,13 @@ def nudge(transformName=None,
     offsetX = (xyz_x - transformPoint) + OpenMaya.MVector(transformPoint)
     offsetY = (xyz_y - transformPoint) + OpenMaya.MVector(transformPoint)
 
+    log.debug("Offset X: %s, %s, %s..." % (offsetX.x, offsetX.y, offsetX.z))
+    log.debug("Offset Y: %s, %s, %s..." % (offsetY.x, offsetY.y, offsetY.z))
+
     cmds.undoInfo(openChunk=True)
 
     if moveObject:
+
         cmds.move(offsetX.x,
                   offsetX.y,
                   offsetX.z,
@@ -158,6 +171,9 @@ def nudge(transformName=None,
             y_nDirVec = (xyz_y - cameraPoint)
             y_nDirVec.normalize()
             angleY = -math.degrees(startDirVec.angle(y_nDirVec))
+
+            log.debug("Rotating camera in Y: %s..." % angleX)
+            log.debug("Rotating camera in X: %s..." % angleY)
 
             cmds.rotate(angleY, angleX, 0,
                         fnCamera.fullPathName(),
