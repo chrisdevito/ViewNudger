@@ -17,9 +17,6 @@ log = logging.getLogger('ViewNudger')
 
 
 def parseArgs(transformName,
-              pixelAmount=[0.0, 0.0],
-              moveObject=False,
-              rotateView=False,
               view=None):
     """
     Checks values and sends it to the nudge function.
@@ -67,12 +64,7 @@ def parseArgs(transformName,
         else:
             raise RuntimeError("%s is not a view." % view)
 
-    # Move function to do the work.
-    nudge(transformName=transformName,
-          pixelAmount=pixelAmount,
-          view=view,
-          moveObject=moveObject,
-          rotateView=rotateView)
+    return view
 
 
 def nudge(transformName=None,
@@ -96,6 +88,9 @@ def nudge(transformName=None,
     Returns:
         None
     """
+    view = parseArgs(transformName,
+                     view=view)
+
     fnCamera = getCamera(view)
     cameraPoint = fnCamera.eyePoint(OpenMaya.MSpace.kWorld)
     transformPoint = OpenMaya.MPoint(*cmds.xform(
@@ -295,7 +290,7 @@ def screenToWorld(point2D=None,
 if __name__ == '__main__':
 
     pixelAmount = [10.0, 10.0]
-    nudgeView = parseArgs(transformName="pSphere1",
-                          pixelAmount=pixelAmount,
-                          moveObject=False,
-                          rotateView=True)
+    nudgeView = nudge(transformName="pSphere1",
+                      pixelAmount=pixelAmount,
+                      moveObject=False,
+                      rotateView=True)
