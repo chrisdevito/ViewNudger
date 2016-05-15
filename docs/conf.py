@@ -34,7 +34,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'OBB'
+project = u'ViewNudger'
 copyright = u'2016, Christopher DeVito'
 
 # The version info for the project you're documenting, acts as replacement
@@ -74,7 +74,7 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 html_static_path = []
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'OBBdoc'
+htmlhelp_basename = 'ViewNudgerDocs'
 
 
 # -- Options for LaTeX output ------------------------------------------
@@ -86,8 +86,8 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass
 # [howto/manual]).
 latex_documents = [
-    ('index', 'OBB.tex',
-     u'OBB Documentation',
+    ('index', 'ViewNudger.tex',
+     u'ViewNudger Documentation',
      u'Christopher DeVito', 'manual'),
 ]
 
@@ -96,8 +96,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'OBB',
-     u'OBB Documentation',
+    ('index', 'ViewNudger',
+     u'ViewNudger Documentation',
      [u'Christopher DeVito'], 1)
 ]
 
@@ -107,10 +107,10 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ('index', 'OBB',
-     u'OBB Documentation',
+    ('index', 'ViewNudger',
+     u'ViewNudger Documentation',
      u'Christopher DeVito',
-     'OBB',
-     'One line description of project.',
+     'ViewNudger',
+     'A Maya Camera or Object pixel nudger.',
      'Miscellaneous'),
 ]
