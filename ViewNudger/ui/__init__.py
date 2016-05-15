@@ -1,4 +1,4 @@
-#!/usr/bin/env xpython
+#!/usr/bin/env python
 
 try:
     from .ui import UI

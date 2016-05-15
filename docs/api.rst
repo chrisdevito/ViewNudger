@@ -3,5 +3,5 @@
 API
 ====
 
-.. automodule:: OBB.api
+.. automodule:: ViewNudger.api
     :members:
