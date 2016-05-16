@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__title__ = 'Gotham Pubcam'
+__title__ = 'ViewNudger'
 __author__ = 'Christopher DeVito'
 __email__ = 'chrisdevito@chribis.com'
 __url__ = 'https://github.com/chrisdevito/ViewNudger'

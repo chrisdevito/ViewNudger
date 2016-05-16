@@ -14,23 +14,24 @@ with open("README.rst") as readme_file:
 with open("HISTORY.rst") as history_file:
     history = history_file.read()
 
+import ViewNudger
 
 setup(
-    name="ViewNudger",
-    version="0.1.2",
-    description="A Maya Camera or Object pixel nudger",
+    name=ViewNudger.__title__,
+    version=ViewNudger.__version__,
+    description=ViewNudger.__description__,
     long_description=readme,
-    author="Christopher DeVito",
-    author_email="chrisdevito@chribis.com",
-    url="https://github.com/chrisdevito/ViewNudger",
-    license="MIT",
+    author=ViewNudger.__author__,
+    author_email=ViewNudger.__email__,
+    url=ViewNudger.__url__,
+    license=ViewNudger.__license__,
     packages=find_packages(exclude=["tests"]),
     package_data={
         "": ["LICENSE", "README.rst", "HISTORY.rst"],
     },
     include_package_data=True,
     zip_safe=False,
-    keywords="ViewNudger",
+    keywords=ViewNudger.__title__,
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Developers",
