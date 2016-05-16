@@ -6,7 +6,7 @@ except:
     pass
 
 try:
-    import maya.OpenMayaUI as OpenMayaUI
+    from maya import OpenMayaUI
 except:
     pass
 
@@ -15,11 +15,10 @@ def maya_main_window():
     '''
     Get maya's main window.
 
-    Returns:
-        (QtGui.QtWidget) Maya's main window.
+    :raises: None
 
-    Raises:
-        None
+    :return: Maya's main window.
+    :rtype: QtGui.QtWidget
     '''
     # Get the maya main window as a QMainWindow instance
     ptr = long(OpenMayaUI.MQtUtil.mainWindow())
@@ -28,13 +27,12 @@ def maya_main_window():
 
 class LineWidget(QtGui.QFrame):
     '''
-    Builds a QFrame for our UI.
+    :class:`QFrame` deals with building a QPushButton.
 
-    Returns:
-        None
+    :raises: None
 
-    Raises:
-        None
+    :return: None
+    :rtype: NoneType
     '''
     def __init__(self, name, parent=None):
 
@@ -46,13 +44,12 @@ class LineWidget(QtGui.QFrame):
 
 class ButtonWidget(QtGui.QPushButton):
     '''
-    Builds a QPushButton for our UI.
+    :class:`QPushButton` deals with building a QPushButton.
 
-    Returns:
-        None
+    :raises: None
 
-    Raises:
-        None
+    :return: None
+    :rtype: NoneType
     '''
     def __init__(self, name, parent=None):
 
@@ -75,6 +72,11 @@ class ButtonWidget(QtGui.QPushButton):
 class LabelWidget(QtGui.QLabel):
     '''
     :class:`labelWidget` deals with building a QLabel.
+
+    :raises: None
+
+    :return: None
+    :rtype: NoneType
     '''
     def __init__(self, name, parent=None):
 
@@ -96,13 +98,12 @@ class LabelWidget(QtGui.QLabel):
 
 class TreeWidget(QtGui.QTreeWidget):
     '''
-    Builds a QTreeWidget for our UI.
+    :class:`QTreeWidget` deals with building a QTreeWidget.
 
-    Returns:
-        None
+    :raises: None
 
-    Raises:
-        None
+    :return: None
+    :rtype: NoneType
     '''
     def __init__(self, name, headerName=None, parent=None):
 
@@ -119,6 +120,11 @@ class TreeWidget(QtGui.QTreeWidget):
 class CheckBox(QtGui.QCheckBox):
     '''
     :class:`CheckBox` deals with building a QCheckBox.
+
+    :raises: None
+
+    :return: None
+    :rtype: NoneType
     '''
     def __init__(self, name, checked, parent=None):
 
@@ -130,13 +136,12 @@ class CheckBox(QtGui.QCheckBox):
 
 class TextWidget(QtGui.QTextEdit):
     '''
-    Builds a QTextEdit for our UI.
+    :class:`QTextEdit` deals with building a QTextEdit.
 
-    Returns:
-        None
+    :raises: None
 
-    Raises:
-        None
+    :return: None
+    :rtype: NoneType
     '''
     text_changed = QtCore.Signal(str)
 
@@ -154,13 +159,12 @@ class TextWidget(QtGui.QTextEdit):
 
 class ComboBox(QtGui.QComboBox):
     '''
-    Builds a combo box for our UI.
+    :class:`ComboBox` deals with building a ComboBox.
 
-    Returns:
-        None
+    :raises: None
 
-    Raises:
-        None
+    :return: None
+    :rtype: NoneType
     '''
     def __init__(self, name, parent=None):
 
@@ -171,6 +175,11 @@ class ComboBox(QtGui.QComboBox):
 class LineEdit(QtGui.QLineEdit):
     '''
     :class:`LineEdit` deals with building a LineEdit.
+
+    :raises: None
+
+    :return: None
+    :rtype: NoneType
     '''
     def __init__(self, name, parent=None):
 

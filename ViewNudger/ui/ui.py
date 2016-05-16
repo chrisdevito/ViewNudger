@@ -54,11 +54,10 @@ class UI(QtGui.QDialog):
         '''
         Creates layout for publishing camera.
 
-        Returns:
-            None
+        :raises: None
 
-        Raises:
-            None
+        :return: None
+        :rtype: NoneType
         '''
         pass
 
@@ -66,11 +65,10 @@ class UI(QtGui.QDialog):
         '''
         Creates connections to buttons.
 
-        Returns:
-            None
+        :raises: None
 
-        Raises:
-            None
+        :return: None
+        :rtype: NoneType
         '''
         pass
 
@@ -78,11 +76,10 @@ class UI(QtGui.QDialog):
         '''
         Creates tool tips for various widgets.
 
-        Returns:
-            None
+        :raises: None
 
-        Raises:
-            None
+        :return: None
+        :rtype: NoneType
         '''
         pass
 
@@ -90,11 +87,10 @@ class UI(QtGui.QDialog):
         '''
         Closes the dialog.
 
-        Returns:
-            None
+        :raises: None
 
-        Raises:
-            None
+        :return: None
+        :rtype: NoneType
         '''
         self.close()
 
@@ -102,11 +98,10 @@ class UI(QtGui.QDialog):
         """
         Shows the window.
 
-        Returns:
-            None
+        :raises: None
 
-        Raises:
-            None
+        :return: None
+        :rtype: NoneType
         """
         self.show()
         self.activateWindow()
