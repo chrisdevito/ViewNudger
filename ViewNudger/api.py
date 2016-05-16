@@ -31,7 +31,6 @@ def parseArgs(transformName,
 
     :return: None
     :rtype: NoneType
-
     """
     if not transformName:
         log.error("No transformName supplied.")
@@ -79,17 +78,21 @@ def nudge(transformName=None,
     """
     Moves object/camera by pixel amount in x and y.
 
-    :param transformName (str): Name of a transform to nudge from.
-    :param pixelAmount (list of 2 floats): Pixel amount to nudge in x and y.
-    :param moveObject (bool): Move the object instead of view.
-    :param rotateView (bool): Rotate the camera back at point after nudge.
-    :param view (OpenMaya.M3dView): View to calculate nudge one.
+    :param transformName: Name of a transform to nudge from.
+    :type transformName: str
+    :param pixelAmount: Pixel amount to nudge in x and y.
+    :type moveObject: list of 2 floats
+    :param moveObject: Move the object instead of view.
+    :type moveObject: bool
+    :param rotateView: Rotate the camera back at point after nudge.
+    :type rotateView: bool
+    :param view: View to calculate nudge one.
+    :type view: OpenMaya.M3dView
 
-    Raises:
-        None
+    :raises: None
 
-    Returns:
-        None
+    :return: None
+    :rtype: NoneType
     """
     view = parseArgs(transformName,
                      view=view)
@@ -183,13 +186,13 @@ def getCamera(view):
     """
     Gets the camera from the current view.
 
-    :param view (OpenMaya.M3dView): View to get camera from.
+    :param view: View to get camera from.
+    :type view: OpenMaya.M3dView
 
-    Raises:
-        None
+    :raises: None
 
-    Returns:
-        (OpenMaya.MFnCamera) Camera function set.
+    :return: Camera function set.
+    :rtype: OpenMaya.MFnCamera
     """
     dagCam = OpenMaya.MDagPath()
     view.getCamera(dagCam)
@@ -206,16 +209,19 @@ def worldToScreen(fnCamera=None,
     '''
     Converts a world point into a screen point.
 
-    :param fnCamera(OpenMaya.MFnCamera): Camera function set.
-    :param cameraPoint(OpenMaya.MPoint): Position to test.
-    :param transformPoint(OpenMaya.MPoint): Position to test.
-    :param view (OpenMaya.M3dView): View to convert point.
+    :param fnCamera: Camera function set.
+    :type fnCamera: OpenMaya.MFnCamera
+    :param cameraPoint: Position to test.
+    :type cameraPoint: OpenMaya.MPoint
+    :param transformPoint: Position to test.
+    :type transformPoint: OpenMaya.MPoint
+    :param view: View to convert point.
+    :type view: OpenMaya.M3dView
 
-    Returns
-        (list of floats) x and y position of 3d point.
+    :raises: None
 
-    Raises:
-        None
+    :return: x and y position of 3d point.
+    :rtype: list of 2 floats
     '''
     # Get camera direction.
     cameraDir = fnCamera.viewDirection(OpenMaya.MSpace.kWorld)
@@ -255,16 +261,19 @@ def screenToWorld(point2D=None,
     '''
     Converts a screen point to world.
 
-    :param point2D(list of floats): x and y values to convert to 3d value.
-    :param cameraPoint(OpenMaya.MPoint): Position to test.
-    :param setDistance(float): Distance to set returned point from camera.
-    :param view (OpenMaya.M3dView): View to convert point.
+    :param point2D: x and y values to convert to 3d value.
+    :type point2D: list of 2 floats
+    :param cameraPoint: Position to test.
+    :type cameraPoint: OpenMaya.MPoint
+    :param setDistance: Distance to set returned point from camera.
+    :type setDistance: float
+    :param view: View to convert point.
+    :type view: OpenMaya.M3dView
 
-    Returns:
-        (OpenMaya.MPoint) 2d Point converted to 3d point.
+    :raises: None
 
-    Raises:
-        None
+    :return: 2d Point converted to 3d point.
+    :rtype: OpenMaya.MPoint
     '''
     # Grab project and view matrices.
     projectionMatrix = OpenMaya.MMatrix()
