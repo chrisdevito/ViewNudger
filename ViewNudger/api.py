@@ -22,12 +22,7 @@ def parseArgs(transformName,
     Checks values and sends it to the nudge function.
 
     :param transformName (str): Name of a transform to nudge from.
-    :param pixelAmount (list of 2 floats): Pixel amount to nudge in x and y.
-    :param moveObject (bool): Move the object instead of view.
-    :param rotateView (bool): Rotate the camera back to aim
-                              at point after nudge.
     :param view (OpenMaya.M3dView): Optional desired M3dView.
-                                    Active view is default.
 
     Raises:
         ``RuntimeError`` If transformName isn't a transform or doesn't exist.
@@ -85,8 +80,7 @@ def nudge(transformName=None,
     :param transformName (str): Name of a transform to nudge from.
     :param pixelAmount (list of 2 floats): Pixel amount to nudge in x and y.
     :param moveObject (bool): Move the object instead of view.
-    :param rotateView (bool): Rotate the camera back to aim
-                              at point after nudge.
+    :param rotateView (bool): Rotate the camera back at point after nudge.
     :param view (OpenMaya.M3dView): View to calculate nudge one.
 
     Raises:

@@ -10,7 +10,7 @@ Features
 - No extra libraries needed.
 
 Planned Features
-================
+=================
 - Give me ideas!
 
 Requirements
