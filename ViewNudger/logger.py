@@ -5,13 +5,13 @@ def myLogger(debug=False):
     """
     Creates a logger object.
 
-    :param debug: (bool) Sets logging to level DEBUG or not.
+    :param debug: Sets logging to level DEBUG.
+    :type debug: (bool)
 
-    Returns:
-        (logger object)
+    :raises: None
 
-    Raises:
-        None
+    :return: logger
+    :rtype: logger object
     """
     LFMT = '%(asctime)-15s %(name)s [%(levelname)s] %(message)s'
     DFMT = '%Y-%m-%d %H:%M:%S'
