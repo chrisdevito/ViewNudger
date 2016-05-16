@@ -26,9 +26,9 @@ def parseArgs(transformName,
     :param view: Optional desired M3dView.
     :type view: OpenMaya.M3dView
 
-    :raise:
+    :raises:
         ``RuntimeError`` If transformName isn't a transform or doesn't exist.
-        ``RuntimeError`` If view set is not a view.
+        \n``RuntimeError`` If view set is not a view.
 
     :return:
         None
