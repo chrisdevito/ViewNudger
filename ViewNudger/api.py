@@ -24,7 +24,7 @@ def parseArgs(transformName,
     :param transformName: Name of a transform to nudge from.
     :type transformName: str
     :param view: Optional desired M3dView.
-    :type transformName: OpenMaya.M3dView
+    :type view: OpenMaya.M3dView
 
     :raises: ``RuntimeError`` If transformName isn't a transform or doesn't exist.
     :raises: ``RuntimeError`` If view set is not a view.
