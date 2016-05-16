@@ -81,7 +81,7 @@ def nudge(transformName=None,
     :param transformName: Name of a transform to nudge from.
     :type transformName: str
     :param pixelAmount: Pixel amount to nudge in x and y.
-    :type moveObject: list of 2 floats
+    :type pixelAmount: list of 2 floats
     :param moveObject: Move the object instead of view.
     :type moveObject: bool
     :param rotateView: Rotate the camera back at point after nudge.
