@@ -17,7 +17,7 @@ with open("HISTORY.rst") as history_file:
 
 setup(
     name="ViewNudger",
-    version="0.1.1",
+    version="0.1.2",
     description="A Maya Camera or Object pixel nudger",
     long_description=readme,
     author="Christopher DeVito",

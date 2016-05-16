@@ -5,7 +5,7 @@ __title__ = 'Gotham Pubcam'
 __author__ = 'Christopher DeVito'
 __email__ = 'chrisdevito@chribis.com'
 __url__ = 'https://github.com/chrisdevito/ViewNudger'
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 __license__ = 'MIT'
 __description__ = '''A Maya Camera or Object pixel nudger.'''
 
