@@ -21,10 +21,11 @@ def parseArgs(transformName,
     """
     Checks values and sends it to the nudge function.
 
-    :param transformName: Name of a transform to nudge from.
-    :type transformName: str
-    :param view: Optional desired M3dView.
-    :type view: OpenMaya.M3dView
+    Args:
+        :param transformName: Name of a transform to nudge from.
+        :type transformName: str
+        :param view: Optional desired M3dView.
+        :type view: OpenMaya.M3dView
 
     Raises:
         RuntimeError: If transformName isn't a transform or doesn't exist.
