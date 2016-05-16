@@ -1,28 +1,62 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 try:
-    import shiboken
     from PySide import QtGui, QtCore
-    wrapinstance = shiboken.wrapInstance
-except:
-    pass
-
-try:
-    from maya import OpenMayaUI
 except:
     pass
 
 
-def maya_main_window():
+class IconButton(QtGui.QLabel):
     '''
-    Get maya's main window.
+    Icon button.
 
     :raises: None
 
     :return: Maya's main window.
-    :rtype: QtGui.QtWidget
+    :rtype: QtGui.QLabel
     '''
-    # Get the maya main window as a QMainWindow instance
-    ptr = long(OpenMayaUI.MQtUtil.mainWindow())
-    return wrapinstance(ptr, QtGui.QWidget)
+    clicked = QtCore.Signal()
+    cache = {}
+
+    def __init__(self, icon, icon_hover, *args, **kwargs):
+        super(IconButton, self).__init__(*args, **kwargs)
+
+        if icon not in self.cache:
+            self.cache[icon] = QtGui.QPixmap(QtGui.QImage(icon))
+        if icon_hover not in self.cache:
+            self.cache[icon_hover] = QtGui.QPixmap(QtGui.QImage(icon_hover))
+
+        self.normal = self.cache[icon]
+        self.hover = self.cache[icon_hover]
+        self.hovering = False
+        self.setPixmap(self.normal)
+
+    def mousePressEvent(self, event):
+
+        self.setPixmap(self.normal)
+        super(IconButton, self).mousePressEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        if self.hovering:
+            self.setPixmap(self.hover)
+        else:
+            self.setPixmap(self.normal)
+        super(IconButton, self).mouseReleaseEvent(event)
+        if self.hovering:
+            self.clicked.emit()
+
+    def enterEvent(self, event):
+
+        self.setPixmap(self.hover)
+        self.hovering = True
+        super(IconButton, self).enterEvent(event)
+
+    def leaveEvent(self, event):
+
+        self.setPixmap(self.normal)
+        self.hovering = False
+        super(IconButton, self).leaveEvent(event)
 
 
 class LineWidget(QtGui.QFrame):
@@ -55,7 +89,7 @@ class ButtonWidget(QtGui.QPushButton):
 
         super(ButtonWidget, self).__init__(parent)
 
-        self.setText(name)
+        # self.setText(name)
         self.setObjectName("{0}_btn".format(name))
 
         # Font.

@@ -1,6 +1,11 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import os
 import logging
+from . import utils
 from . import widgets
+from functools import partial
 
 try:
     from PySide import QtGui, QtCore
@@ -10,7 +15,9 @@ except:
 from .. import api
 reload(api)
 
-DIR = os.path.dirname(__file__)
+this_package = os.path.abspath(os.path.dirname(__file__))
+icon_path = partial(os.path.join, this_package)
+
 log = logging.getLogger('ViewNudger')
 
 
@@ -18,20 +25,21 @@ class UI(QtGui.QDialog):
     '''
     :class:`UI` deals with building our UI.
     '''
-    def __init__(self, parent=widgets.maya_main_window()):
+    def __init__(self, parent=utils.get_maya_window()):
 
         super(UI, self).__init__(parent)
 
         self.parent = parent
 
         self.setWindowTitle("View Nudger")
-        self.resize(400, 400)
+        self.resize(200, 200)
         self.setObjectName("viewNudger")
         self.setWindowFlags(QtCore.Qt.Window)
 
-        with open(os.path.join(DIR, "style.css")) as f:
+        with open(icon_path("style.css")) as f:
             self.setStyleSheet(f.read())
 
+        # Center to frame.
         qr = self.frameGeometry()
         cp = QtGui.QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
@@ -59,7 +67,54 @@ class UI(QtGui.QDialog):
         :return: None
         :rtype: NoneType
         '''
-        pass
+        self.button_layout = QtGui.QGridLayout()
+
+        self.nudgeUp_Btn = widgets.IconButton(
+            icon=icon_path('icons', 'test.png'),
+            icon_hover=icon_path('icons', 'test_hover.png'),
+        )
+        self.nudgeDown_Btn = widgets.IconButton(
+            icon=icon_path('icons', 'test.png'),
+            icon_hover=icon_path('icons', 'test_hover.png'),
+        )
+        self.nudgeLeft_Btn = widgets.IconButton(
+            icon=icon_path('icons', 'test.png'),
+            icon_hover=icon_path('icons', 'test_hover.png'),
+        )
+        self.nudgeRight_Btn = widgets.IconButton(
+            icon=icon_path('icons', 'test.png'),
+            icon_hover=icon_path('icons', 'test_hover.png'),
+        )
+        self.nudgeUpLeft_Btn = widgets.IconButton(
+            icon=icon_path('icons', 'test.png'),
+            icon_hover=icon_path('icons', 'test_hover.png'),
+        )
+        self.nudgeUpRight_Btn = widgets.IconButton(
+            icon=icon_path('icons', 'test.png'),
+            icon_hover=icon_path('icons', 'test_hover.png'),
+        )
+        self.nudgeDownLeft_Btn = widgets.IconButton(
+            icon=icon_path('icons', 'test.png'),
+            icon_hover=icon_path('icons', 'test_hover.png'),
+        )
+        self.nudgeDownRight_Btn = widgets.IconButton(
+            icon=icon_path('icons', 'test.png'),
+            icon_hover=icon_path('icons', 'test_hover.png'),
+        )
+
+        self.button_layout.addWidget(self.nudgeUpLeft_Btn, 0, 0)
+        self.button_layout.addWidget(self.nudgeUp_Btn, 0, 1)
+        self.button_layout.addWidget(self.nudgeUpRight_Btn, 0, 2)
+        self.button_layout.addWidget(self.nudgeLeft_Btn, 1, 0)
+        self.button_layout.addWidget(self.nudgeRight_Btn, 1, 2)
+        self.button_layout.addWidget(self.nudgeDownLeft_Btn, 2, 0)
+        self.button_layout.addWidget(self.nudgeDown_Btn, 2, 1)
+        self.button_layout.addWidget(self.nudgeDownRight_Btn, 2, 2)
+
+        self.button_layout.setVerticalSpacing(0)
+        self.button_layout.setHorizontalSpacing(3)
+
+        self.central_boxLayout.addLayout(self.button_layout)
 
     def create_connections(self):
         '''
