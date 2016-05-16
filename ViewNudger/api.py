@@ -19,18 +19,18 @@ log = logging.getLogger('ViewNudger')
 def parseArgs(transformName,
               view=None):
     """
-    Checks values and sends it to the nudge function.
+    Checks input values.
 
     :param transformName: Name of a transform to nudge from.
     :type transformName: str
     :param view: Optional desired M3dView.
-    :type view: OpenMaya.M3dView
+    :type view: OpenMaya.M3dView or Str
 
     :raises RuntimeError: If transformName isn't a transform or doesn't exist.
     :raises RuntimeError: If view set is not a view.
 
-    :return: None
-    :rtype: NoneType
+    :return: view
+    :rtype: OpenMaya.M3dView
     """
     if not transformName:
         log.error("No transformName supplied.")
