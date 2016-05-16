@@ -28,7 +28,7 @@ def parseArgs(transformName,
 
     :raises:
         ``RuntimeError`` If transformName isn't a transform or doesn't exist.
-        \n``RuntimeError`` If view set is not a view.
+        ``RuntimeError`` If view set is not a view.
 
     :return:
         None
