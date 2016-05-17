@@ -17,6 +17,24 @@ except:
 log = logging.getLogger('ViewNudger')
 
 
+def getSelection():
+    """
+    Gets the current selection.
+
+    :raises RuntimeError: If nothing selected.
+
+    :return: First index of object selected
+    :rtype: str
+    """
+    sel = cmds.ls(selection=True, type="transform")
+
+    if not sel:
+        log.error("Nothing selected!")
+        raise
+
+    return sel[0]
+
+
 def parseArgs(transformName,
               view=None):
     """
@@ -98,8 +116,13 @@ def nudge(transformName=None,
     view = parseArgs(transformName,
                      view=view)
 
-    fnCamera = getCamera(view)
-    cameraPoint = fnCamera.eyePoint(OpenMaya.MSpace.kWorld)
+    fnCamera, cameraTransform = getCamera(view)
+    cameraPoint = OpenMaya.MPoint(*cmds.xform(
+        cameraTransform.fullPathName(),
+        query=True,
+        worldSpace=True,
+        translation=True))
+
     transformPoint = OpenMaya.MPoint(*cmds.xform(
         transformName,
         query=True,
@@ -110,6 +133,9 @@ def nudge(transformName=None,
     pointDist = startDirVec.length()
     startDirVec.normalize()
 
+    log.debug("Object is being moved by %s, %s..." % (
+        pixelAmount[0], pixelAmount[1]))
+
     x, y = worldToScreen(fnCamera=fnCamera,
                          cameraPoint=cameraPoint,
                          transformPoint=transformPoint,
@@ -117,60 +143,56 @@ def nudge(transformName=None,
 
     log.debug("Object is %s, %s in screen space..." % (x, y))
 
-    xyz_x = screenToWorld(point2D=[x + pixelAmount[0], y],
-                          cameraPoint=cameraPoint,
-                          setDistance=pointDist,
-                          view=view)
-
-    xyz_y = screenToWorld(point2D=[x, y + pixelAmount[1]],
-                          cameraPoint=cameraPoint,
-                          setDistance=pointDist,
-                          view=view)
-
-    offsetX = (xyz_x - transformPoint) + OpenMaya.MVector(transformPoint)
-    offsetY = (xyz_y - transformPoint) + OpenMaya.MVector(transformPoint)
-
-    log.debug("Offset X: %s, %s, %s..." % (offsetX.x, offsetX.y, offsetX.z))
-    log.debug("Offset Y: %s, %s, %s..." % (offsetY.x, offsetY.y, offsetY.z))
+    xyz = screenToWorld(point2D=[x + pixelAmount[0], y + pixelAmount[1]],
+                        cameraPoint=cameraPoint,
+                        setDistance=pointDist,
+                        view=view)
 
     cmds.undoInfo(openChunk=True)
 
     if moveObject:
 
-        cmds.move(offsetX.x,
-                  offsetX.y,
-                  offsetX.z,
-                  transformName,
-                  relative=True)
-
-        cmds.move(offsetY.x,
-                  offsetY.y,
-                  offsetY.z,
-                  transformName,
-                  relative=True)
+        cmds.xform(transformName,
+                   translation=[xyz.x, xyz.y, xyz.z],
+                   worldSpace=True)
 
     else:
-        cmds.move(offsetX.x,
-                  offsetX.y,
-                  offsetX.z,
-                  fnCamera.fullPathName(),
-                  relative=True)
 
-        cmds.move(offsetY.x,
-                  offsetY.y,
-                  offsetY.z,
+        offset = (xyz - transformPoint)
+
+        cmds.move(offset.x,
+                  offset.y,
+                  offset.z,
                   fnCamera.fullPathName(),
                   relative=True)
 
         if rotateView:
 
+            xyz_x = screenToWorld(point2D=[x + pixelAmount[0], y],
+                                  cameraPoint=cameraPoint,
+                                  setDistance=pointDist,
+                                  view=view)
+
+            xyz_y = screenToWorld(point2D=[x, y + pixelAmount[1]],
+                                  cameraPoint=cameraPoint,
+                                  setDistance=pointDist,
+                                  view=view)
+
             x_nDirVec = (xyz_x - cameraPoint)
             x_nDirVec.normalize()
             angleX = math.degrees(startDirVec.angle(x_nDirVec))
 
+            if pixelAmount[0] < 0:
+                log.debug("Inverting angle x due to negative x value...")
+                angleX = -angleX
+
             y_nDirVec = (xyz_y - cameraPoint)
             y_nDirVec.normalize()
             angleY = -math.degrees(startDirVec.angle(y_nDirVec))
+
+            if pixelAmount[1] < 0:
+                log.debug("Inverting angle y due to negative y value...")
+                angleY = -angleY
 
             log.debug("Rotating camera in Y: %s..." % angleX)
             log.debug("Rotating camera in X: %s..." % angleY)
@@ -200,7 +222,9 @@ def getCamera(view):
 
     fnCamera = OpenMaya.MFnCamera(dagCam)
 
-    return fnCamera
+    dagCam.pop()
+
+    return fnCamera, dagCam
 
 
 def worldToScreen(fnCamera=None,
@@ -244,7 +268,7 @@ def worldToScreen(fnCamera=None,
     z = pointDir * cameraDir
 
     if z < 0.01:
-        return None, None
+        return 0.0, 0.0
 
     # Calculate 2d Screen space.
     point3D = transformPoint * (viewMatrix * projectionMatrix)
