@@ -13,7 +13,6 @@ try:
 except:
     pass
 
-
 log = logging.getLogger('ViewNudger')
 
 
@@ -30,7 +29,7 @@ def getSelection():
 
     if not sel:
         log.error("Nothing selected!")
-        raise
+        raise RuntimeError("Nothing selected!")
 
     return sel[0]
 
@@ -163,7 +162,7 @@ def nudge(transformName=None,
         cmds.move(offset.x,
                   offset.y,
                   offset.z,
-                  fnCamera.fullPathName(),
+                  cameraTransform.fullPathName(),
                   relative=True)
 
         if rotateView:
@@ -248,6 +247,7 @@ def worldToScreen(fnCamera=None,
     :return: x and y position of 3d point.
     :rtype: list of 2 floats
     '''
+    view.refresh(True, True, True)
     # Get camera direction.
     cameraDir = fnCamera.viewDirection(OpenMaya.MSpace.kWorld)
 
