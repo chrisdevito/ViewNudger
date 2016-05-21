@@ -128,7 +128,7 @@ def nudge(transformName=None,
         worldSpace=True,
         translation=True))
 
-    startDirVec = (transformPoint - cameraPoint)
+    startDirVec = (cameraPoint - transformPoint)
     pointDist = startDirVec.length()
     startDirVec.normalize()
 
@@ -157,49 +157,41 @@ def nudge(transformName=None,
 
     else:
 
+        if rotateView:
+
+            loc = cmds.spaceLocator(name="cameraLoc")[0]
+
+            cmds.delete(cmds.parentConstraint(
+                cameraTransform.fullPathName(), loc))
+
+            locName = cmds.parent(loc, cameraTransform.fullPathName())[0]
+
+            cmds.aimConstraint(transformName, locName,
+                               aimVector=[0.0, 0.0, -1.0],
+                               upVector=[0.0, 1.0, 0.0],
+                               worldUpType="object",
+                               worldUpObject=cameraTransform.fullPathName(),
+                               maintainOffset=True)
+
         offset = (xyz - transformPoint)
 
-        cmds.move(offset.x,
-                  offset.y,
-                  offset.z,
-                  cameraTransform.fullPathName(),
-                  relative=True)
+        cmds.xform(cameraTransform.fullPathName(),
+                   translation=[offset.x, offset.y, offset.z],
+                   relative=True)
 
         if rotateView:
 
-            xyz_x = screenToWorld(point2D=[x + pixelAmount[0], y],
-                                  cameraPoint=cameraPoint,
-                                  setDistance=pointDist,
-                                  view=view)
+            rot = cmds.xform(
+                locName, query=True, rotation=True)
 
-            xyz_y = screenToWorld(point2D=[x, y + pixelAmount[1]],
-                                  cameraPoint=cameraPoint,
-                                  setDistance=pointDist,
-                                  view=view)
+            cmds.xform(cameraTransform.fullPathName(),
+                       rotation=rot,
+                       relative=True,
+                       objectSpace=True)
 
-            x_nDirVec = (xyz_x - cameraPoint)
-            x_nDirVec.normalize()
-            angleX = math.degrees(startDirVec.angle(x_nDirVec))
+            cmds.delete(locName)
 
-            if pixelAmount[0] < 0:
-                log.debug("Inverting angle x due to negative x value...")
-                angleX = -angleX
-
-            y_nDirVec = (xyz_y - cameraPoint)
-            y_nDirVec.normalize()
-            angleY = -math.degrees(startDirVec.angle(y_nDirVec))
-
-            if pixelAmount[1] < 0:
-                log.debug("Inverting angle y due to negative y value...")
-                angleY = -angleY
-
-            log.debug("Rotating camera in Y: %s..." % angleX)
-            log.debug("Rotating camera in X: %s..." % angleY)
-
-            cmds.rotate(angleY, angleX, 0,
-                        fnCamera.fullPathName(),
-                        objectSpace=True,
-                        relative=True)
+            cmds.select(transformName)
 
     cmds.undoInfo(closeChunk=True)
 
@@ -247,7 +239,6 @@ def worldToScreen(fnCamera=None,
     :return: x and y position of 3d point.
     :rtype: list of 2 floats
     '''
-    view.refresh(True, True, True)
     # Get camera direction.
     cameraDir = fnCamera.viewDirection(OpenMaya.MSpace.kWorld)
 

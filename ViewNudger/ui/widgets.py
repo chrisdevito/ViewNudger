@@ -42,6 +42,7 @@ class IconButton(QtGui.QLabel):
             self.setPixmap(self.hover)
         else:
             self.setPixmap(self.normal)
+
         super(IconButton, self).mouseReleaseEvent(event)
         if self.hovering:
             self.clicked.emit()
