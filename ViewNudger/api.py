@@ -3,17 +3,35 @@
 
 from __future__ import division
 
-import math
 import logging
 
 try:
     from maya import cmds
     from maya import OpenMaya
     from maya import OpenMayaUI
+
+    from PySide import QtGui, QtCore, QtTest
+    import shiboken
 except:
     pass
 
 log = logging.getLogger('ViewNudger')
+
+
+def getRenderer(view):
+    """
+    Gets the current renderer in viewport.
+
+    :param view: View to convert point.
+    :type view: OpenMaya.M3dView
+
+    :raises: None
+
+    :return: Name of current renderer.
+    :rtype: str
+    """
+    panelName = OpenMayaUI.MQtUtil.fullName(long(view.widget()))[:-1]
+    return cmds.modelEditor(panelName, q=True, rnm=True)
 
 
 def getSelection():
@@ -114,6 +132,7 @@ def nudge(transformName=None,
     """
     view = parseArgs(transformName,
                      view=view)
+    renderer = getRenderer(view)
 
     fnCamera, cameraTransform = getCamera(view)
     cameraPoint = OpenMaya.MPoint(*cmds.xform(
@@ -192,6 +211,9 @@ def nudge(transformName=None,
             cmds.delete(locName)
 
             cmds.select(transformName)
+
+    if not renderer == "vp2Renderer":
+        force_update(view)
 
     cmds.undoInfo(closeChunk=True)
 
@@ -323,6 +345,31 @@ def screenToWorld(point2D=None,
     point3D = (directionVec * setDistance) + OpenMaya.MVector(cameraPoint)
 
     return OpenMaya.MPoint(point3D)
+
+
+def force_update(view):
+    '''
+    Selects the center of the viewport to force it to
+    refresh properly in VP1. THIS IS AWFUL.
+
+    :param view: View to convert point.
+    :type view: OpenMaya.M3dView
+
+    :raises: None
+
+    :return: None
+    :rtype: NoneType
+    '''
+    w = shiboken.wrapInstance(long(view.widget()), QtGui.QWidget)
+    cur_pos = QtGui.QCursor.pos()
+    p = w.mapToGlobal(w.rect().center())
+    QtTest.QTest.mouseMove(w)
+    QtTest.QTest.mousePress(
+        w, QtCore.Qt.LeftButton, QtCore.Qt.AltModifier, p)
+    QtTest.QTest.mouseRelease(
+        w, QtCore.Qt.LeftButton, QtCore.Qt.AltModifier, p)
+    QtGui.qApp.processEvents()
+    QtGui.QCursor.setPos(cur_pos)
 
 if __name__ == '__main__':
 

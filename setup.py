@@ -30,13 +30,13 @@ setup(
         "": ["LICENSE", "README.rst", "HISTORY.rst"],
     },
     include_package_data=True,
-    zip_safe=False,
-    keywords=ViewNudger.__title__,
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
-        "Programming Language :: Python :: 2.7",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python",
+        'Programming Language :: Python :: 2',
     ],
 )
