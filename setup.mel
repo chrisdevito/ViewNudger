@@ -1,0 +1,50 @@
+// Installs the ViewNudger package to your open maya session.
+
+proc string getPathFromProc(string $procName)
+{
+	string $whatIs = `whatIs $procName`;
+	string $parts[] = `stringToStringArray $whatIs ":"`;
+	// in case something went wrong:
+	if (size($parts) == 1)
+		return $parts[0];
+
+	// else if there are 2 items the second is the path:
+	string $path = $parts[1];
+	// or more than 2 the ":" separated them: reattach
+	if (size($parts) > 2)
+		for ($i = 2; $i < size($parts); $i++)
+			$path += ":" + $parts[$i];
+
+	return strip($path);
+}
+
+global proc setupViewNudger()
+{
+	string $path = `getPathFromProc "setupViewNudger"`;
+	string $dirPath = dirname($path);
+
+	string $userScriptDir = `internalVar -userScriptDir`;
+
+	if (`file -q -ex ($userScriptDir + "/ViewNudger")`)
+	{
+		string $response = `confirmDialog -t "Reinstall?" -m "Would you like to reinstall ViewNudger?" -button "Yes" -button "No" -dismissString "No"`;
+		if ($response == "Yes")
+		{
+			python "import shutil";
+			python ("shutil.rmtree(\"" + $userScriptDir + "/ViewNudger\")");
+		}
+		else
+		{
+			return;
+		}
+	}
+
+	// Copy the file path.
+	python "import shutil";
+	python ("shutil.copytree(\"" + $dirPath + "/ViewNudger\", \"" + $userScriptDir + "/ViewNudger\")");
+
+	confirmDialog -t "Installed" -m "ViewNudger has been installed!" -button "Okay";
+
+}
+
+setupViewNudger();
