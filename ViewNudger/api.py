@@ -161,7 +161,8 @@ def nudge(transformName=None,
 
     log.debug("Object is %s, %s in screen space..." % (x, y))
 
-    xyz = screenToWorld(point2D=[x + pixelAmount[0], y + pixelAmount[1]],
+    xyz = screenToWorld(fnCamera=fnCamera,
+                        point2D=[x + pixelAmount[0], y + pixelAmount[1]],
                         cameraPoint=cameraPoint,
                         setDistance=pointDist,
                         view=view)
@@ -292,13 +293,16 @@ def worldToScreen(fnCamera=None,
     return x, y
 
 
-def screenToWorld(point2D=None,
+def screenToWorld(fnCamera=None,
+                  point2D=None,
                   cameraPoint=None,
                   setDistance=1.0,
                   view=None):
     '''
     Converts a screen point to world.
 
+    :param fnCamera: Camera function set.
+    :type fnCamera: OpenMaya.MFnCamera
     :param point2D: x and y values to convert to 3d value.
     :type point2D: list of 2 floats
     :param cameraPoint: Position to test.
@@ -313,6 +317,8 @@ def screenToWorld(point2D=None,
     :return: 2d Point converted to 3d point.
     :rtype: OpenMaya.MPoint
     '''
+    cameraDir = fnCamera.viewDirection(OpenMaya.MSpace.kWorld)
+
     # Grab project and view matrices.
     projectionMatrix = OpenMaya.MMatrix()
     view.projectionMatrix(projectionMatrix)
@@ -341,6 +347,11 @@ def screenToWorld(point2D=None,
     # Project point into setDistance depth.
     directionVec = (point3D - cameraPoint)
     directionVec.normalize()
+
+    z = directionVec * cameraDir
+    if z < 0:
+        directionVec = (cameraPoint - point3D)
+        directionVec.normalize()
 
     point3D = (directionVec * setDistance) + OpenMaya.MVector(cameraPoint)
 
