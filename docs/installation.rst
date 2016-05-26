@@ -38,15 +38,15 @@ Drop this code as a button or run from the maya python script editor.
 .. code-block:: python
     :name: viewNudgerUI.py
 
-	from ViewNudger import ui
+from ViewNudger import ui
 
-	if __name__ == '__main__':
-	    global win
+if __name__ == '__main__':
+    global win
 
-	    try:
-	        win.close()
-	    except:
-	        pass
+    try:
+        win.close()
+    except:
+        pass
 
-	    win = ui.UI()
-	    win.create()
+    win = ui.UI()
+    win.create()
