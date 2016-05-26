@@ -162,6 +162,41 @@ class UI(QtGui.QDialog):
         self.nudgeDownRight_Btn.clicked.connect(
             partial(self.nudge, [1.0, -1.0]))
 
+        self.rotateView_CHKBOX.stateChanged.connect(self.testChkBox)
+
+    def testChkBox(self, stateChanged):
+        """
+        Checks if rotateView checkbox is set. Then greys out object checkbox.
+
+        :param stateChanged: Value of state change on checkbox.
+        :type stateChanged:  int
+
+        :raises: None
+
+        :return: None
+        :rtype: NoneType
+        """
+
+        if stateChanged:
+            self.moveObject_CHKBOX.setEnabled(False)
+            self.moveObject_CHKBOX.setStyleSheet("QCheckBox{"
+                                                 "color: rgb(100, 100, 100);"
+                                                 "font: 8pt \"Arial\";}")
+            self.moveObject_LBL.setEnabled(False)
+            self.moveObject_LBL.setStyleSheet("QLabel{"
+                                              "font: 10pt \"Arial\";"
+                                              "color: rgb(100, 100, 100);}")
+
+        else:
+            self.moveObject_CHKBOX.setEnabled(True)
+            self.moveObject_CHKBOX.setStyleSheet("QCheckBox{"
+                                                 "color: rgb(235, 235, 235);"
+                                                 "font: 8pt \"Arial\";}")
+            self.moveObject_LBL.setEnabled(True)
+            self.moveObject_LBL.setStyleSheet("QLabel{"
+                                              "font: 10pt \"Arial\";"
+                                              "color: rgb(235, 235, 235);}")
+
     def nudge(self, vector):
         """
         Does the nudge!
